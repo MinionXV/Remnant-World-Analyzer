@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146791562-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-146791562-1');
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <script src="index0516.js?version=2.1"></script>
+  <script src="DB.js"></script>
+  <script src="Item.js"></script>
+  <script src="GameInfo.js"></script>
+  <script src="WorldEvent.js"></script>
+  <script src="Character.js"></script>
+  <script src="SaveFile.js"></script>
+
+</head>
+
+<body>
+  <h1>Remnant: From the Ashes World Analyzer</h1>
+  <h2>How to use:<br></h2>
+  <p>
+    Your save files are located in C:/Users/YOUR USER NAME/AppData/Local/Remant/Saved/SaveGames.
+    Upload files named save_{character number}.sav to see what events you rolled for this specific character.
+    Additionnaly you can upload your profile.sav to get informations about the items you're missings and if some events
+    you rolled can reward them.
+    You can drop multiple save files, the tables will update accordingly.
+    <br><br>
+  </p>
+  <h2>Known Issues:</h2>
+  <p>
+    Ad block can mess with the tool functionality.<br>
+    Filters will be added on the next update<br>
+    <b>You must use the red crystal to travel to the location before the world can be analyzed.<b>
+  </p>
+
+  <div id="drop-area">
+    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" width="50" height="43" viewBox="0 0 50 43">
+      <path
+        d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z" />
+    </svg>
+    <div class="upload-text">Choose or drop profile or save files</div>
+    <label class="upload-label" for="upload-input">Upload File</label>
+    <input id="upload-input" type="file" onchange="loadFile(this)">
+  </div>
+
+  <div id="filters">
+    <button id="toggle-adv">Show Adventure Mode</button>
+
+    <br />
+
+    <div id="select-filters">
+      <fieldset>
+        <legend>Regions:</legend>
+
+        <label><input type="checkbox" id="f-earth" class="filter" checked>Earth</label>
+        <label><input type="checkbox" id="f-rhom" class="filter" checked>Rhom</label>
+        <label><input type="checkbox" id="f-corsus" class="filter" checked>Corsus</label>
+        <label><input type="checkbox" id="f-yaesha" class="filter" checked>Yaesha</label>
+      </fieldset>
+
+      <br />
+
+      <fieldset>
+        <legend>Type:</legend>
+        <label><input type="checkbox" id="f-items" class="filter" checked>Items</label>
+        <label><input type="checkbox" id="f-sidedgs" class="filter" checked>Side Dungeons</label>
+        <label><input type="checkbox" id="f-sieges" class="filter" checked>Sieges</label>
+        <label><input type="checkbox" id="f-poi" class="filter" checked>Points of Interest</label>
+        <label><input type="checkbox" id="f-minibosses" class="filter" checked>Mini Bosses</label>
+        <label><input type="checkbox" id="f-bosses" class="filter" checked>Bosses</label>
+      </fieldset>
+
+      <br />
+
+      <fieldset>
+        <legend>Name filter:</legend>
+
+        <label><input type="text" id="f-name" class="filter" placeholder="Input event name filter"></label><button
+          class="clear-button" onclick="document.getElementById('f-name').value=''">X</button>
+      </fieldset>
+
+      <br />
+
+      <button class="half-button" onclick="updateFilters(false)">Hide all</button> <button class="half-button"
+        onclick="updateFilters(true)">Show all</button>
+      <br />
+      <button id="apply">Apply</button>
+    </div>
+  </div>
+
+  <div class="custom-select-wrapper">
+    <div class="custom-select-label">Character selection:</div>
+    <div class="custom-select">
+      <div class="custom-select__trigger"><span></span>
+        <div class="arrow"></div>
+      </div>
+      <div class="custom-options">
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="tabs">
+    <button class="tablinks" onclick="openTab(event, '#tabCampaign')">Campaign</button>
+    <button class="tablinks" onclick="openTab(event, '#tabAdventure')">Adventure</button>
+    <button class="tablinks" onclick="openTab(event, '#tabMissingItems')">Missing Items</button>
+    <button class="tablinks" onclick="openTab(event, '#tabCredits')">Credits</button>
+  </div>
+
+  <div id="tabCampaign" class="tabcontent">
+    <div class="errorMessage">No events to display.<br />You didn't upload the save file for this character or you
+      didn't start a campaign on it.</div>
+    <div class="shownTables"></div>
+    <div class="hiddenTables"></div>
+    <!--<table class="piece-table campaign-mode" style="display:none;">
+      <thead>
+        <tr class="header-row">
+          <th class="headerSort" tabindex="0" role="columnheader button">Location
+          </th>
+          <th class="headerSort" tabindex="0" role="columnheader button">Event Type
+          </th>
+          <th class="headerSort" tabindex="0" role="columnheader button">Event Name
+          </th>
+          <th class="headerSort" tabindex="0" role="columnheader button">Missing Items
+          </th>
+        </tr>
+      </thead>
+      <tbody id="campaign">
+
+      </tbody>
+      <tfoot></tfoot>
+    </table> -->
+  </div>
+
+  <div id="tabAdventure" class="tabcontent">
+    <div class="errorMessage">No events to display.<br />You didn't upload the save file for this character or you
+      didn't start an adventure on it.</div>
+    <div class="shownTables"></div>
+    <div class="hiddenTables"></div>
+  </div>
+
+  <div id="tabMissingItems" class="tabcontent">
+    <div class="errorMessage">No items to display.<br />Upload your profile.sav to get more infos.</div>
+    <div class="shownTables"></div>
+    <div class="hiddenTables"></div>
+  </div>
+
+  <div id="tabCredits" class="tabcontent">
+    <p>
+      Credit to /u/hzla00 for the initial javascript implementation.<br>
+      Credit to Razzmatazzz for his desktop c#
+      <a href="https://github.com/Razzmatazzz/RemnantSaveManager/releases">world analyzer</a>.
+    </p>
+  </div>
+
+</body>
+
+</html>
