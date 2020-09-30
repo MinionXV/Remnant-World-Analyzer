@@ -202,24 +202,7 @@ class Character
     {
         if (this.CampaignEvents.length == 0)
         {
-            //try
-            //{
-                this.processSaveData(saveText);
-           /* }
-            catch (err)
-            {
-                console.log("Error loading world Data: ");
-                console.log("\tCharacterData.LoadWorldData");
-                console.log("\t"+err.message);
-
-                if (err.message.includes("being used by another process"))
-                {
-                    console.log("Save file in use; waiting 0.5 seconds and retrying.");
-                    setTimeout(function(){ 
-                        this.LoadWorldData(saveText);
-                    }, 500);
-                }
-            } */
+            this.processSaveData(saveText);
         }
     }
 

@@ -27,10 +27,6 @@ function loadFile(o) {
     fr.readAsText(o.files[0]);
 }
 
-/*function generateTable(tableType, charIndex){
-    if(tableType ==)
-} */
-
 function genAdventureTable(charIndex){
     var events = saveChars[charIndex].AdventureEvents;
     if (!events.length == 0){
@@ -89,7 +85,6 @@ function updateAllTables(){
     }
 }
 
-
 function populateSelect(indexSelect) {
     $('.custom-options').empty();
     for(var charNumber in saveChars){
@@ -123,8 +118,6 @@ function displayTables(charIndex){
         $(this).appendTo($(this).closest('.tabcontent').children('.hiddenTables'));
     });
     // show selected char tables
-    // if there is no corresponding id, the selector doesn't append anything
-
     campId = $('#campChar'+charIndex);
     advId = $('#advChar'+charIndex);
     mItemsId = $('#mitemsChar'+charIndex);
@@ -170,13 +163,6 @@ function initSelect() {
                 displayTables(node.data("value"));
             }
         });
-        /*option.addEventListener('click', function () {
-            if (!this.classList.contains('selected')) {
-                this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
-                this.classList.add('selected');
-                this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = this.textContent; 
-            }
-        }); */
     }
 
     window.addEventListener('click', function (e) {
@@ -186,49 +172,6 @@ function initSelect() {
         }
     });
 }
-
-/*
-function populateTable(worldMode, selectedChar) {
-    $(worldMode).empty();
-    events = worldMode === "#adventure" ? saveChars[selectedChar].AdventureEvents : saveChars[selectedChar].CampaignEvents;
-
-    //This populates the table for data to be pulled
-
-    events.forEach(event => {
-        html = "<tr><td>" + event.location + "</td><td>" + event.type + "</td><td>" + event.name + "</td><td>" + event.MissingItems + "</td></tr>"
-        $(worldMode).append(html);
-    });
-
-    /*if (zone != undefined && eventType != undefined && eventName != undefined) {
-
-        if (zones[zone][eventType] != undefined) {
-            if (zones[zone][eventType].search(eventName) == -1) {
-                zones[zone][eventType] += ", " + eventName
-
-                if (worldMode == "#adventure") {
-                    mainLocationText = ''
-                } else {
-                    mainLocationText = currentMainLocation.split(/(?=[A-Z])/).join(' ') + ": "
-                }
-                html = "<tr><td>" + zone + ": " + mainLocationText + currentSublocation.split(/(?=[A-Z])/).join(' ') +  "</td><td>" + eventType + "</td><td>" + eventName.split(/(?=[A-Z])/).join(' ') + "</td></tr>"
-            }
-        } else {
-            zones[zone][eventType] = eventName
-
-                if (worldMode == "#adventure") {
-                    mainLocationText = ''
-                } else {
-                    mainLocationText = currentMainLocation.split(/(?=[A-Z])/).join(' ') + ": "
-                }
-
-                html = "<tr><td>" + zone + ": " + mainLocationText + currentSublocation.split(/(?=[A-Z])/).join(' ') +  "</td><td>" + eventType + "</td><td>" + eventName.split(/(?=[A-Z])/).join(' ') + "</td></tr>"
-        }
-        $(worldMode).append(html)
-    } */
- /*   $('#filters').show();
-    $('.adventure-mode').show();
-    $('.campaign-mode').show();
-} */
 
 function updateSaveChars() {
     if (!$.isEmptyObject(saveProfile)) {
@@ -251,13 +194,51 @@ function updateSaveChars() {
     console.log(saveChars);
 }
 
-function clearElement(el){
-    while (el.firstChild) {
-        el.firstChild.remove();
-    }
+function openTab(evt, tabName) {
+    $(".tabcontent").hide();
+    $(".tablinks").removeClass("active");
+    $(tabName).show();
+    $(evt.currentTarget).addClass("active");
 }
 
-updateFilters = function (checked) {
+function initDrop(){
+    var $dropArea = $('#drop-area');
+    $dropArea.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    })
+    .on('dragover dragenter', function() {
+        $dropArea.addClass('is-dragover');
+    })
+    .on('dragleave dragend drop', function() {
+        $dropArea.removeClass('is-dragover');
+    })
+    .on('drop', function(e) {
+        console.log(e);
+        files = e.originalEvent.dataTransfer.files;
+        o = { files: files }
+        loadFile(o);
+    });
+}
+
+$(document).ready(function () {
+    initSelect();
+    initDrop();
+    
+    /*$('#apply').on('click', updateTable);
+
+    $('#toggle-adv').on('click', function () {
+        $('.main-mode, .adventure-mode').toggle()
+        if ($(this).text() == "Show Adventure Mode") {
+            $(this).text("Show Campaign Mode")
+        } else {
+            $(this).text("Show Adventure Mode")
+        }
+    }) */
+});
+
+
+/* updateFilters = function (checked) {
     $('.filter').each((i, f) => {
         try {
             f.checked = checked
@@ -268,60 +249,9 @@ updateFilters = function (checked) {
     if (checked) {
         document.getElementById('f-name').value = ""
     }
-}
+} */
 
-function showDataFile(e, o) {
-    $('tr:not(.header-row)').remove()
-
-    updateFilters(true)
-    text = e.target.result
-
-    filesLoaded++;
-    if (filesLoaded == 1) {
-        saveChars = Character.GetCharactersFromSave(text);
-        console.log(saveChars);
-    } else {
-        saveChars[0].LoadWorldData(text);
-        console.log(saveChars[0]);
-    }
-
-
-
-    /*text = text.split("/Game/Campaign_Main/Quest_Campaign_Ward13.Quest_Campaign_Ward13")[0]
-    text = text.split("/Game/Campaign_Main/Quest_Campaign_City.Quest_Campaign_City")[0].replace(/Game/g,"\n") // modified 0 => 1
-
-    textArray = text.split("\n")
-
-   adText = e.target.result
-
-   adText = adText.split("\n")
-   tempList = []
-   for(i = 0; i < adText.length; i++)
-   {
-     if (String(adText[i]).includes('Adventure') === true)
-     {
-       tempList.push(adText[i])
-     }
-   }
-   adText = tempList[1]
-    if (adText != undefined) {
-        adventureMode = true
-        adText = adText.replace(/Game/g,"\n")
-        adTextArray = adText.split("\n")
-    } else {
-        adventureMode = false
-    }
-
-    if (adventureMode) {
-        getWorldData(adTextArray, "#adventure")
-    }
-    getWorldData(textArray, "#main")
-
-    $('.main-mode').show()
-    $('.adventure-mode').hide()
-    $('#toggle-adv').text("Show Adventure Mode") */
-}
-
+/*
 updateTable = function () {
     $('tr:not(.header-row)').hide()
 
@@ -393,7 +323,7 @@ updateTable = function () {
             }
         })
     }
-}
+} 
 
 function searchTable() {
     // Declare variables
@@ -415,60 +345,4 @@ function searchTable() {
             }
         }
     }
-}
-
-function openTab(evt, tabName) {
-    $(".tabcontent").hide();
-    $(".tablinks").removeClass("active");
-    $(tabName).show();
-    $(evt.currentTarget).addClass("active");
-}
-
-function initDrop(){
-    var $dropArea = $('#drop-area');
-    $dropArea.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    })
-    .on('dragover dragenter', function() {
-        $dropArea.addClass('is-dragover');
-    })
-    .on('dragleave dragend drop', function() {
-        $dropArea.removeClass('is-dragover');
-    })
-    .on('drop', function(e) {
-        console.log(e);
-        files = e.originalEvent.dataTransfer.files;
-        o = { files: files }
-        loadFile(o);
-    });
-}
-
-$(document).ready(function () {
-    initSelect();
-    initDrop();
-    
-    /*$('#apply').on('click', updateTable);
-
-
-    $('#toggle-adv').on('click', function () {
-        $('.main-mode, .adventure-mode').toggle()
-        if ($(this).text() == "Show Adventure Mode") {
-            $(this).text("Show Campaign Mode")
-        } else {
-            $(this).text("Show Adventure Mode")
-        }
-    }) */
-
-    /* dropArea = document.getElementById('drop-area');
-    dropArea.addEventListener('dragenter', preventDefaults, false);
-    dropArea.addEventListener('dragenter', highlight, false);
-    dropArea.addEventListener('dragover', preventDefaults, false);
-    dropArea.addEventListener('dragover', highlight, false);
-    dropArea.addEventListener('dragleave', preventDefaults, false);
-    dropArea.addEventListener('dragleave', unhighlight, false);
-    dropArea.addEventListener('drop', preventDefaults, false);
-    dropArea.addEventListener('drop', unhighlight, false);
-    dropArea.addEventListener('drop', handleDrop, false); */
-
-});
+}*/

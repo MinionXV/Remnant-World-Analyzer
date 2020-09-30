@@ -92,13 +92,5 @@ class Item
     toString()
     {
         return this.itemType + ": " + this.itemName;
-    }
-
-    // equals ??? => voir implementation avec heritage, p-t pas utile
-    // idem pour gethashcode
-    // idem pour compareto
-    
-    
-
-    
+    } 
 }

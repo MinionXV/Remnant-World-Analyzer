@@ -25,7 +25,7 @@ class SaveFile
         } else if(this.saveType === SaveFile.SaveType.Profile){
             this.saveChars = Character.GetCharactersFromSave(text);
         } else{
-            // throw error
+            // TODO: throw error
         }
     }
 
