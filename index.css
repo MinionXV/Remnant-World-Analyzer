@@ -202,7 +202,7 @@ label {
 #chances th, .piece-table th {
   padding-top: 12px;
   padding-bottom: 12px;
-  text-align: left;
+  text-align: center;
   background-color: #486581;
   color: #f5f5f5;
 }
