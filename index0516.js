@@ -2,29 +2,62 @@ var saveProfile = {};
 var saveFiles = {};
 var saveChars = {};
 
-function loadFile(o) {
-    console.log(o);
+function loadFile(file, modified) {
+    return new Promise((resolve, reject) => {
+        var fr = new FileReader();
+        fr.onload = function (e) {
+            path = file.name;
+            text = e.target.result;
+            var save = new SaveFile(path, text);
+            if (save.saveType === SaveFile.SaveType.Profile) {
+                saveProfile = save;
+                console.log(saveProfile);
+                modified.all = true;
+                //resolve();
+            } else if (save.saveType === SaveFile.SaveType.Save) {
+                var saveNum = save.saveNumber
+                saveFiles[saveNum] = save;
+                modified[saveNum] = true;
+                //resolve();
+            } else{
+                // we don't want to prevent other files from loading by immediately rejecting loadFiles global promise
+                //reject(new Error(`Invalid save file for ${path}`));
+                console.log(`Invalid save file for ${path}`);
+            }            
+            resolve();
+        };
+        fr.readAsText(file);
+    });
+}
 
-    var fr = new FileReader();
-    fr.onload = function (e) {
-        path = o.files[0].name;
-        text = e.target.result;
-        var save = new SaveFile(path, text);
-        var charSelect = 0;
-        if (save.saveType === SaveFile.SaveType.Profile) {
-            saveProfile = save;
-            updateSaveChars();
+function loadFiles(o){
+    var modified = {};
+    Promise.all([...o.files].map(file => { 
+        return loadFile(file, modified);
+    }))
+    /*.catch(error => {
+        console.log(error);
+    })*/
+    .finally(() => {
+        updateModified(modified);
+    });    
+}
+
+function updateModified(modified){
+    updateSaveChars();
+    var charSelect = 0;
+    if(!$.isEmptyObject(modified)){
+        if(modified.all) {
             updateAllTables();
-        } else if (save.saveType === SaveFile.SaveType.Save) {
-            saveFiles[save.saveNumber] = save;
-            charSelect = save.saveNumber
-            updateSaveChars();
-            updateTables(charSelect);
+        } else {
+            var charNums = Object.keys(modified);
+            charSelect = charNums[charNums.length - 1]
+            charNums.forEach( charNum => {
+                updateTable(charNum);
+            });     
         }
-
         populateSelect(charSelect);
-    };
-    fr.readAsText(o.files[0]);
+    }
 }
 
 function genAdventureTable(charIndex){
@@ -73,7 +106,7 @@ function genMissingItemsTable(charIndex){
     }
 }
 
-function updateTables(charIndex){
+function updateTable(charIndex){
     genAdventureTable(charIndex);
     genCampaignTable(charIndex);
     genMissingItemsTable(charIndex);
@@ -81,7 +114,7 @@ function updateTables(charIndex){
 
 function updateAllTables(){
     for(const charIndex in saveChars){
-        updateTables(charIndex);
+        updateTable(charIndex);
     }
 }
 
@@ -214,10 +247,9 @@ function initDrop(){
         $dropArea.removeClass('is-dragover');
     })
     .on('drop', function(e) {
-        console.log(e);
         files = e.originalEvent.dataTransfer.files;
         o = { files: files }
-        loadFile(o);
+        loadFiles(o);
     });
 }
 
