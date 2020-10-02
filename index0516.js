@@ -11,7 +11,6 @@ function loadFile(file, modified) {
             var save = new SaveFile(path, text);
             if (save.saveType === SaveFile.SaveType.Profile) {
                 saveProfile = save;
-                console.log(saveProfile);
                 modified.all = true;
                 //resolve();
             } else if (save.saveType === SaveFile.SaveType.Save) {
@@ -224,7 +223,7 @@ function updateSaveChars() {
             saveChars[saveNumber] = saveFiles[saveNumber].saveChars[0]
         }
     }
-    console.log(saveChars);
+    //console.log(saveChars);
 }
 
 function openTab(evt, tabName) {
