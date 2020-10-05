@@ -10,7 +10,15 @@ function searchTable(searchStr) {
     if (searchStr !== "") {
         $(shownTableId).find('tbody > tr').each(function () {
             var tr = $(this);
-            tr.toggle(tr.text().toLowerCase().includes(searchStr));
+            var filter = false;
+            tr.children('td').each(function () {
+                if ($(this).text().toLowerCase().includes(searchStr)) {
+                    filter = true;
+                    return false; // breaks the loop in jquery
+                }
+            }); // equivalent to tr.children('td').some(...), if jquery implemented array.some function...
+            tr.toggle(filter);
+            //tr.toggle(tr.text().toLowerCase().includes(searchStr));
         });
     } else {
         // theoretically useless but maybe faster than above selector since it selects fewer rows (despite the expensive :hidden selector)
@@ -90,8 +98,8 @@ function updateModified(modified) {
 
 function genAdventureTable(charIndex) {
     var id = "tab-adventure-char" + charIndex;
-    var selector = "#"+id;
-    if(searchedTables.hasOwnProperty(selector)){
+    var selector = "#" + id;
+    if (searchedTables.hasOwnProperty(selector)) {
         searchedTables[selector] = "";
     }
     $(selector).remove();
@@ -109,8 +117,8 @@ function genAdventureTable(charIndex) {
 
 function genCampaignTable(charIndex) {
     var id = "tab-campaign-char" + charIndex;
-    var selector = "#"+id;
-    if(searchedTables.hasOwnProperty(selector)){
+    var selector = "#" + id;
+    if (searchedTables.hasOwnProperty(selector)) {
         searchedTables[selector] = "";
     }
     $(selector).remove();
@@ -128,8 +136,8 @@ function genCampaignTable(charIndex) {
 
 function genMissingItemsTable(charIndex) {
     var id = "tab-missing-items-char" + charIndex;
-    var selector = "#"+id;
-    if(searchedTables.hasOwnProperty(selector)){
+    var selector = "#" + id;
+    if (searchedTables.hasOwnProperty(selector)) {
         searchedTables[selector] = "";
     }
     $(selector).remove();
