@@ -91,7 +91,11 @@ function updateModified(modified) {
 
 function genAdventureTable(charIndex) {
     var id = "tab-adventure-char" + charIndex;
-    $("#"+id).remove();
+    var selector = "#"+id;
+    if(searchedTables.hasOwnProperty(selector)){
+        searchedTables[selector] = "";
+    }
+    $(selector).remove();
     var events = saveChars[charIndex].AdventureEvents;
     if (!events.length == 0) {
         var table = $('<table id="' + id + '" class="piece-table adventure-mode"><thead><tr class="header-row"><th class="headerSort" role="columnheader button">Location</th><th class="headerSort" role="columnheader button">Event Type</th><th class="headerSort" role="columnheader button">Event Name</th><th class="headerSort" role="columnheader button">Missing Items</th></tr></thead><tbody></tbody><tfoot></tfoot></table>');
@@ -106,7 +110,11 @@ function genAdventureTable(charIndex) {
 
 function genCampaignTable(charIndex) {
     var id = "tab-campaign-char" + charIndex;
-    $("#"+id).remove();
+    var selector = "#"+id;
+    if(searchedTables.hasOwnProperty(selector)){
+        searchedTables[selector] = "";
+    }
+    $(selector).remove();
     var events = saveChars[charIndex].CampaignEvents;
     if (!events.length == 0) {
         var table = $('<table id="' + id + '" class="piece-table campaign-mode"><thead><tr class="header-row"><th class="headerSort" role="columnheader button">Location</th><th class="headerSort" role="columnheader button">Event Type</th><th class="headerSort" role="columnheader button">Event Name</th><th class="headerSort" role="columnheader button">Missing Items</th></tr></thead><tbody></tbody><tfoot></tfoot></table>');
@@ -121,7 +129,11 @@ function genCampaignTable(charIndex) {
 
 function genMissingItemsTable(charIndex) {
     var id = "tab-missing-items-char" + charIndex;
-    $("#"+id).remove();
+    var selector = "#"+id;
+    if(searchedTables.hasOwnProperty(selector)){
+        searchedTables[selector] = "";
+    }
+    $(selector).remove();
     var mItems = saveChars[charIndex].GetMissingItems();
     if (!mItems.length == 0) {
         var table = $('<table id="' + id + '" class="piece-table missing-items"><thead><tr class="header-row"><th class="headerSort" role="columnheader button">Name</th><th class="headerSort" role="columnheader button">Type</th><th class="headerSort" role="columnheader button">Mode</th><th class="headerSort" role="columnheader button">Notes</th></tr></thead><tbody></tbody><tfoot></tfoot></table>');
@@ -135,7 +147,6 @@ function genMissingItemsTable(charIndex) {
 }
 
 function updateTable(charIndex) {
-    searchedTables[shownTableId] = "";
     genAdventureTable(charIndex);
     genCampaignTable(charIndex);
     genMissingItemsTable(charIndex);
