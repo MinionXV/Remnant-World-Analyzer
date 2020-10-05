@@ -7,6 +7,7 @@ var shownTableId; // id of the the displayed table
 var searchedTables = {}; // tracks previous searches on tables to call the searchTable function only when necessary
 
 function searchTable(searchStr) {
+    console.log("searchTable triggered > searchStr = " +searchStr);
     if (searchStr !== "") {
         $(shownTableId).find('tbody > tr').each(function () {
             var tr = $(this);
@@ -89,10 +90,10 @@ function updateModified(modified) {
 }
 
 function genAdventureTable(charIndex) {
+    var id = "tab-adventure-char" + charIndex;
+    $("#"+id).remove();
     var events = saveChars[charIndex].AdventureEvents;
     if (!events.length == 0) {
-        var id = "tab-adventure-char" + charIndex;
-        $(id).remove();
         var table = $('<table id="' + id + '" class="piece-table adventure-mode"><thead><tr class="header-row"><th class="headerSort" role="columnheader button">Location</th><th class="headerSort" role="columnheader button">Event Type</th><th class="headerSort" role="columnheader button">Event Name</th><th class="headerSort" role="columnheader button">Missing Items</th></tr></thead><tbody></tbody><tfoot></tfoot></table>');
         var tbody = table.children('tbody');
         events.forEach(event => {
@@ -104,10 +105,10 @@ function genAdventureTable(charIndex) {
 }
 
 function genCampaignTable(charIndex) {
+    var id = "tab-campaign-char" + charIndex;
+    $("#"+id).remove();
     var events = saveChars[charIndex].CampaignEvents;
     if (!events.length == 0) {
-        var id = "tab-campaign-char" + charIndex;
-        $(id).remove();
         var table = $('<table id="' + id + '" class="piece-table campaign-mode"><thead><tr class="header-row"><th class="headerSort" role="columnheader button">Location</th><th class="headerSort" role="columnheader button">Event Type</th><th class="headerSort" role="columnheader button">Event Name</th><th class="headerSort" role="columnheader button">Missing Items</th></tr></thead><tbody></tbody><tfoot></tfoot></table>');
         var tbody = table.children('tbody');
         events.forEach(event => {
@@ -119,10 +120,10 @@ function genCampaignTable(charIndex) {
 }
 
 function genMissingItemsTable(charIndex) {
+    var id = "tab-missing-items-char" + charIndex;
+    $("#"+id).remove();
     var mItems = saveChars[charIndex].GetMissingItems();
     if (!mItems.length == 0) {
-        var id = "tab-missing-items-char" + charIndex;
-        $(id).remove();
         var table = $('<table id="' + id + '" class="piece-table missing-items"><thead><tr class="header-row"><th class="headerSort" role="columnheader button">Name</th><th class="headerSort" role="columnheader button">Type</th><th class="headerSort" role="columnheader button">Mode</th><th class="headerSort" role="columnheader button">Notes</th></tr></thead><tbody></tbody><tfoot></tfoot></table>');
         var tbody = table.children('tbody');
         mItems.forEach(item => {
@@ -134,12 +135,14 @@ function genMissingItemsTable(charIndex) {
 }
 
 function updateTable(charIndex) {
+    searchedTables[shownTableId] = "";
     genAdventureTable(charIndex);
     genCampaignTable(charIndex);
     genMissingItemsTable(charIndex);
 }
 
 function updateAllTables() {
+    searchedTables = {};
     for (const charIndex in saveChars) {
         updateTable(charIndex);
     }
@@ -174,13 +177,11 @@ function populateSelect(indexSelect) {
 
 function displayTables(charIndex) {
     currentCharNum = charIndex;
-    if (typeof currentTabId !== 'undefined') {
-        shownTableId = currentTabId + "-char" + currentCharNum;
-        handleSearch($("#search-input").val()); // TODO change selector to cached var
-    }
+    displaySearch();
     // hide non selected char tables
     $(".shown-tables").children().each(function () {
-        $(this).appendTo($(this).closest('.tab-content').children('.hidden-tables'));
+        table = $(this);
+        table.appendTo(table.closest('.tab-content').children('.hidden-tables'));
     });
     // show selected char tables
     campId = $('#tab-campaign-char' + charIndex);
@@ -211,6 +212,18 @@ function displayTables(charIndex) {
     //$('#tab-adventure > :not(#campChar'+charIndex+')').hide();
     //$('#tab-adventure > :not(#advChar'+charIndex+')').hide();
     //$('#tab-adventure > :not(#mitemsChar'+charIndex+')').hide();
+}
+
+function displaySearch() {
+    if (typeof currentCharNum !== 'undefined' && typeof currentTabId !== 'undefined') {
+        shownTableId = currentTabId + "-char" + currentCharNum;
+        if (currentTabId === "#tab-credits" || $(currentTabId).children(".error-message").css('display') == 'block') { // :visible can't work here unless we check after selectedTab.show();
+            $('.search-container').hide();
+        } else {
+            handleSearch($("#search-input").val());
+            $('.search-container').show();
+        }
+    }
 }
 
 function updateSaveChars() {
@@ -258,13 +271,7 @@ function initTabs() {
         target = $(evt.currentTarget);
         currentTabId = target.data("value");
         selectedTab = $(currentTabId);
-        if (currentTabId === "#tab-credits" || selectedTab.children(".error-message").css('display') == 'block') { // :visible can't work here unless we check after selectedTab.show();
-            $('.search-container').hide();
-        } else if (typeof currentCharNum !== 'undefined') {
-            shownTableId = currentTabId + "-char" + currentCharNum;
-            handleSearch($("#search-input").val());
-            $('.search-container').show();
-        }
+        displaySearch();
         $(".tab-content").hide();
         $(".tab-links").removeClass("active");
         selectedTab.show();
