@@ -7,7 +7,6 @@ var shownTableId; // id of the the displayed table
 var searchedTables = {}; // tracks previous searches on tables to call the searchTable function only when necessary
 
 function searchTable(searchStr) {
-    console.log("searchTable triggered > searchStr = " +searchStr);
     if (searchStr !== "") {
         $(shownTableId).find('tbody > tr').each(function () {
             var tr = $(this);
