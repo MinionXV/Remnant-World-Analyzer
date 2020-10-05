@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 
-<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remnant: From the Ashes World Analyzer</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146791562-1"></script>
@@ -16,7 +19,7 @@
   </script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link rel="stylesheet" type="text/css" href="index.css">
-  <script src="index0516.js?version=2.1"></script>
+  <script src="index.js?version=1.0"></script>
   <script src="DB.js"></script>
   <script src="Item.js"></script>
   <script src="GameInfo.js"></script>
@@ -54,7 +57,7 @@
     <input id="upload-input" type="file" multiple onchange="loadFiles(this)">
   </div>
 
-  <div id="filters">
+  <!--<div id="filters">
     <button id="toggle-adv">Show Adventure Mode</button>
 
     <br />
@@ -97,7 +100,7 @@
       <br />
       <button id="apply">Apply</button>
     </div>
-  </div>
+  </div> -->
 
   <div class="custom-select-wrapper">
     <div class="custom-select-label">Character selection:</div>
@@ -111,21 +114,29 @@
   </div>
 
 
-
-
   <div class="tabs">
-    <button class="tablinks" onclick="openTab(event, '#tabCampaign')">Campaign</button>
-    <button class="tablinks" onclick="openTab(event, '#tabAdventure')">Adventure</button>
-    <button class="tablinks" onclick="openTab(event, '#tabMissingItems')">Missing Items</button>
-    <button class="tablinks" onclick="openTab(event, '#tabCredits')">Credits</button>
+    <button class="tab-links" data-value="#tab-campaign">Campaign</button>
+    <button class="tab-links" data-value="#tab-adventure">Adventure</button>
+    <button class="tab-links" data-value="#tab-missing-items">Missing Items</button>
+    <button class="tab-links" data-value="#tab-credits">Credits</button>
   </div>
 
-  <div id="tabCampaign" class="tabcontent">
-    <div class="errorMessage">No events to display.<br />You didn't upload the save file for this character or you
-      didn't start a campaign on it.</div>
-    <div class="shownTables"></div>
-    <div class="hiddenTables"></div>
-    <!--<table class="piece-table campaign-mode" style="display:none;">
+  <div class="table-container">
+    <div class="search-container">
+      <input id="search-input" type="text" placeholder="Search...">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="search-icon">
+        <path
+          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+        </path>
+      </svg>
+    </div>
+
+    <div id="tab-campaign" class="tab-content">
+      <div class="error-message">No events to display.<br />You didn't upload the save file for this character or you
+        didn't start a campaign on it.</div>
+      <div class="shown-tables"></div>
+      <div class="hidden-tables"></div>
+      <!--<table class="piece-table campaign-mode" style="display:none;">
       <thead>
         <tr class="header-row">
           <th class="headerSort" tabindex="0" role="columnheader button">Location
@@ -143,29 +154,29 @@
       </tbody>
       <tfoot></tfoot>
     </table> -->
-  </div>
+    </div>
 
-  <div id="tabAdventure" class="tabcontent">
-    <div class="errorMessage">No events to display.<br />You didn't upload the save file for this character or you
-      didn't start an adventure on it.</div>
-    <div class="shownTables"></div>
-    <div class="hiddenTables"></div>
-  </div>
+    <div id="tab-adventure" class="tab-content">
+      <div class="error-message">No events to display.<br />You didn't upload the save file for this character or you
+        didn't start an adventure on it.</div>
+      <div class="shown-tables"></div>
+      <div class="hidden-tables"></div>
+    </div>
 
-  <div id="tabMissingItems" class="tabcontent">
-    <div class="errorMessage">No items to display.<br />Upload your profile.sav to get more infos.</div>
-    <div class="shownTables"></div>
-    <div class="hiddenTables"></div>
-  </div>
+    <div id="tab-missing-items" class="tab-content">
+      <div class="error-message">No items to display.<br />Upload your profile.sav to get more infos.</div>
+      <div class="shown-tables"></div>
+      <div class="hidden-tables"></div>
+    </div>
 
-  <div id="tabCredits" class="tabcontent">
-    <p>
-      Credit to /u/hzla00 for the initial javascript implementation.<br>
-      Credit to Razzmatazzz for his desktop c#
-      <a href="https://github.com/Razzmatazzz/RemnantSaveManager/releases">world analyzer</a>.
-    </p>
+    <div id="tab-credits" class="tab-content">
+      <p>
+        Credit to /u/hzla00 for the initial javascript implementation.<br>
+        Credit to Razzmatazzz for his desktop c#
+        <a href="https://github.com/Razzmatazzz/RemnantSaveManager/releases">world analyzer</a>.
+      </p>
+    </div>
   </div>
-
 </body>
 
 </html>
