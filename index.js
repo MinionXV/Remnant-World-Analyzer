@@ -195,7 +195,6 @@ function populateSelect(indexSelect) {
 
 function displayTables(charIndex) {
     currentCharNum = charIndex;
-    displaySearch();
     // hide non selected char tables
     $(".shown-tables").children().each(function () {
         table = $(this);
@@ -225,6 +224,7 @@ function displayTables(charIndex) {
         $('#tab-missing-items > .error-message').hide();
         mItemsId.appendTo('#tab-missing-items > .shown-tables');
     }
+    displaySearch();
 
     // supposed to be faster than this ?
     //$('#tab-adventure > :not(#campChar'+charIndex+')').hide();
